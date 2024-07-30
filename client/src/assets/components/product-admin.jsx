@@ -2,25 +2,13 @@
 import  { useState } from 'react';
 import placeholder from '../img/placeholder.png'
 import '../styles/productAdmin.css'
-import { Button, Modal, Card } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import {
-  Form,
-  Input,
-  Radio,
-  Upload,
-} from 'antd';
+import {  Modal, Card } from 'antd';
+import EditProductForm from './EditProductForm';
 
 
-const { TextArea } = Input;
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
 
-const ProductAdmin = () => {
+
+const ProductAdmin = ({ product }) => {
   
   //modal config
   const [loading, setLoading] = useState(false);
@@ -52,118 +40,21 @@ const ProductAdmin = () => {
       >
         <div className="Aproduct-container">
           <img src={placeholder} />
-          <p className="name">Torno mecânico VM4133</p>
+          <p className="name">{product.name}</p>
 
           <button className="edit-btn" onClick={showModal}>
             EDITAR
           </button>
           <Modal
-            open={open}
-            title="Editar Produto"
-            onOk={handleOk}
-            onCancel={handleCancel}
-            footer={[
-              <Button key="back" danger onClick={handleCancel}>
-                Cancelar
-              </Button>,
-              <Button
-                key="submit"
-                type="primary"
-                loading={loading}
-                onClick={handleOk}
-              >
-                Salvar
-              </Button>,
-            ]}
-          >
-            <Form
-              labelCol={{
-                span: 4,
-              }}
-              wrapperCol={{
-                span: 14,
-              }}
-              layout="horizontal"
-              style={{
-                maxWidth: 600,
-              }}
-            >
-              <Form.Item label="Nome:">
-                <Input />
-              </Form.Item>
-
+          open={open}
+          title="Editar Produto"
           
-              <Form.Item
-                label="Imagem Principal"
-                valuePropName="fileList"
-                getValueFromEvent={normFile}
-              >
-                <Upload action="/upload.do" listType="picture-card">
-                  <button
-                    style={{
-                      border: 0,
-                      background: "none",
-                    }}
-                    type="button"
-                  >
-                    <PlusOutlined />
-                    <div
-                      style={{
-                        marginTop: 8,
-                      }}
-                    >
-                      Adicionar Imagens
-                    </div>
-                  </button>
-                </Upload>
-              </Form.Item>
+          onCancel={handleCancel}
+          footer={[
+            
+          ]}>
 
-           
-              <Form.Item
-                label="Imagens"
-                valuePropName="fileList"
-                getValueFromEvent={normFile}
-              >
-                <Upload action="/upload.do" listType="picture-card">
-                  <button
-                    style={{
-                      border: 0,
-                      background: "none",
-                    }}
-                    type="button"
-                  >
-                    <PlusOutlined />
-                    <div
-                      style={{
-                        marginTop: 8,
-                      }}
-                    >
-                      Adicionar Imagens
-                    </div>
-                  </button>
-                </Upload>
-              </Form.Item>
-
-              <Form.Item label="Descrição">
-                <TextArea rows={4} />
-              </Form.Item>
-
-              <Form.Item label="Detalhes">
-                <TextArea rows={4} />
-              </Form.Item>
-
-              <Form.Item label="Acessorios">
-                <TextArea rows={4} />
-              </Form.Item>
-
-
-              <Form.Item label="Condição">
-                <Radio.Group>
-                  <Radio value="apple"> Novo </Radio>
-                  <Radio value="pear"> Usado </Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Form>
+            <EditProductForm/> 
           </Modal>
           <button
             className="delete-btn"
@@ -174,7 +65,7 @@ const ProductAdmin = () => {
                 footer: (_, { OkBtn, CancelBtn }) => (
                   <>
                     <CancelBtn />
-                    <OkBtn />
+                    <OkBtn onClick={} />
                   </>
                 ),
               });

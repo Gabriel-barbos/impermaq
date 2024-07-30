@@ -1,30 +1,43 @@
 import '../styles/product-list.css'
 import ProductCard from './product-card';
 import  { useState, useEffect } from 'react';
-import ProductService from '../../services/ProductService';
+import { fetchProducts } from '../../api';
 
 const ProductList = () => {
 
-const [produtos, setProdutos] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
 
-useEffect(() => {
-  ProductService.getProdutos()
-    .then(response => {
-      setProdutos(response.data);
-    })
-    .catch(error => {
-      console.error('Erro ao buscar produtos:', error);
-    });
-}, []);
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const products = await fetchProducts();
+        setProducts(products);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    getProducts();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   <div className="space-align-container">
-  
-  {produtos.map(produto => (
-        <ProductCard key={produto._id} produto={produto} />
+  {products.map((product) => (
+        <ProductCard key={product._id} product={product} />
       ))}
-
+ 
   </div>
 };
 export default ProductList;

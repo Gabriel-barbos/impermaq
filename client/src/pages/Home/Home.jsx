@@ -19,15 +19,43 @@ import checkitem_icon from '../../assets/img/icons/check.svg'
 import mail from '../../assets/img/icons/mail.svg'
 import wpp from '../../assets/img/icons/wpp.svg'
 //components
-import ProductList from '../../assets/components/product-list';
 import { ArrowUpRight } from 'lucide-react';
+
+import { fetchProducts } from '../../api';
+import  { useEffect, useState } from 'react';
+import ProductCard from '../../assets/components/product-card';
+
 
 
 function Home(){
 
-const WppClick = () => {
-  window.open('https://wa.me/5511999999999?text=Olá,')
-}
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const products = await fetchProducts();
+        setProducts(products);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    getProducts();
+  }, []);
+  
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+  
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+  
 
 const EmailClick = () => {
   const url = `mailto:yurialberto@corinthians.com?subject=}&body=`;
@@ -75,7 +103,15 @@ const EmailClick = () => {
 
       <section className="machines-container">
         <h1>Máquinas</h1>
-        <ProductList />
+        
+        <div className="space-align-container">
+      {products.map((product) => (
+        <ProductCard key={product._id} product={product} />
+      ))}
+    </div>
+
+
+
 
         <button className="see-all-btn">
           <span className="button-text">VER MAIS</span>
@@ -92,7 +128,7 @@ const EmailClick = () => {
                 <img src={check_icon} className="service-image" />
               </div>
               <h3 className="service-title">Manutenção Preventiva</h3>
-              <button onClick={ window.open('https://wa.me/5511999999999?text=Olá,Gostaria de saber mais o serviço de manutenção preventiva,')}>Entre em contato</button>
+              <button >Entre em contato</button>
             </div>
           </div>
 
@@ -102,7 +138,7 @@ const EmailClick = () => {
                 <img src={key_icon} className="service-image" />
               </div>
               <h3 className="service-title">Manutenção Corretiva</h3>
-              <button  onClick={ window.open('https://wa.me/5511999999999?text=Olá,Gostaria de saber mais o serviço de manutenção corretiva,')}>Entre em contato</button>
+              <button  >Entre em contato</button>
             </div>
           </div>
 
@@ -112,7 +148,7 @@ const EmailClick = () => {
                 <img src={book_icon} className="service-image" />
               </div>
               <h3 className="service-title">Consultoria</h3>
-              <button  onClick={ window.open('https://wa.me/5511999999999?text=Olá,Gostaria de saber mais o serviço de consultoria,')}>Entre em contato</button>
+              <button >Entre em contato</button>
             </div>
           </div>
         </div>
@@ -176,7 +212,7 @@ const EmailClick = () => {
   <img src={wpp} />
   
   <div className='button-wpp'>
-  <button onClick={WppClick}>Clique Aqui</button>
+  <button >Clique Aqui</button>
   </div>
 </div>
 </div>

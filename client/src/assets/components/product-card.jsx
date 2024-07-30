@@ -2,7 +2,7 @@ import { Card } from "antd"
 import placeholder from '../img/placeholder.png'
 import '../styles/product-card.css'
 
-function ProductCard(){
+function ProductCard({ product }){
 return(
     <>
     <Card
@@ -12,8 +12,7 @@ return(
     }}>
     <div className="product-container">
     <img src={placeholder}/>
-    <p className="name">Torno mecânico VM4133</p>
-    <p className="price">R$ 46.580,06</p>
+    <p className="name">{product.name}</p>
         <button>VER MAIS</button>
     </div>
   </Card>
