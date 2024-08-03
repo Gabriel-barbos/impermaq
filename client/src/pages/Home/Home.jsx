@@ -21,46 +21,88 @@ import wpp from '../../assets/img/icons/wpp.svg'
 //components
 import { ArrowUpRight } from 'lucide-react';
 
+import { fetchAdminData } from '../../api';
 import { fetchProducts } from '../../api';
 import  { useEffect, useState } from 'react';
 import ProductCard from '../../assets/components/product-card';
-
+import { useNavigate } from 'react-router-dom'; 
 
 
 function Home(){
 
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [products, setProducts] = useState([]); //buscar produtos
+  const [loading, setLoading] = useState(true); //estado de busca
+  const [error, setError] = useState(null); //estado de erro de busca
+  const [adminData, setAdminData] = useState({}); //buscar dados do admin
+  const [showAllProducts, setShowAllProducts] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const navigate = useNavigate(); 
 
-  useEffect(() => {
-    const getProducts = async () => {
-      try {
-        const products = await fetchProducts();
-        setProducts(products);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
+    useEffect(() => {
+      const getData = async () => {
+        try {
+          const [products, adminData] = await Promise.all([
+            fetchProducts(),
+            fetchAdminData()
+          ]);
+          setProducts(products);
+          setAdminData(adminData);
+        } catch (error) {
+          setError(error.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      getData();
+    }, []);
+  
+    if (loading) {
+      return <p>Loading...</p>;
+    }
+  
+    if (error) {
+      return <p>Error: {error}</p>;
+    }
+ 
+
+    //funções do js para dinamica do site
+  
+    //WPP Button
+    const redirectToWhatsApp = () => {
+      if (adminData.telefone) {
+        const formattedPhone = adminData.telefone.replace(/\D/g, ''); // Remove caracteres não numéricos
+        const url = `https://wa.me/${formattedPhone}`;
+        window.open(url, '_blank');
+      } else {
+        alert('Número de telefone do administrador não disponível.');
       }
     };
-  
-    getProducts();
-  }, []);
-  
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-  
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
-  
 
-const EmailClick = () => {
-  const url = `mailto:yurialberto@corinthians.com?subject=}&body=`;
-  window.open(url, '_blank');
-};
+    //Email button
+    const redirectToEmail = () => {
+        if (adminData.email) {
+          const url = `mailto:${adminData.email}`;
+          window.open(url, '_blank');
+        } else {
+          alert('Endereço de e-mail do administrador não disponível.');
+        }
+      };
+
+//see all products function
+      const toggleShowAllProducts = () => {
+        setShowAllProducts(!showAllProducts);
+      };
+    
+      //image login page
+      const handleImageClick = () => {
+        setClickCount(clickCount + 1);
+        if (clickCount + 1 >= 7) {
+          navigate('/login'); // Redireciona para outra página
+
+        }
+      };
+
 
   return (
     <>
@@ -69,7 +111,7 @@ const EmailClick = () => {
       <div className="main-menu">
         <div className="main-menu__content">
           <img src={main} className="main-image" />
-          <h1 className="menu-title">
+          <h1 id="main-menu" className="menu-title">
             Seu Parceiro em Máquinas Industriais de Confiança
           </h1>
         </div>
@@ -102,25 +144,22 @@ const EmailClick = () => {
       {/* Maquinas */}
 
       <section className="machines-container">
-        <h1>Máquinas</h1>
+        <h1 id='produtoo'>Máquinas</h1>
         
         <div className="space-align-container">
-      {products.map((product) => (
-        <ProductCard key={product._id} product={product} />
-      ))}
-    </div>
+          {products.slice(0, showAllProducts ? products.length : 8).map((product) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+        </div>
 
-
-
-
-        <button className="see-all-btn">
-          <span className="button-text">VER MAIS</span>
+        <button className="see-all-btn" onClick={toggleShowAllProducts}>
+          <span className="button-text">{showAllProducts ? 'VER MENOS' : 'VER MAIS'}</span>
           <ArrowUpRight className="icon" />
         </button>
       </section>
 
       <section className="services">
-        <h1>Serviços</h1>
+        <h1 id='services'>Serviços</h1>
         <div className="services-list">
           <div className="service-card">
             <div className="service-container">
@@ -128,7 +167,7 @@ const EmailClick = () => {
                 <img src={check_icon} className="service-image" />
               </div>
               <h3 className="service-title">Manutenção Preventiva</h3>
-              <button >Entre em contato</button>
+              <button onClick={redirectToWhatsApp}>Entre em contato</button>
             </div>
           </div>
 
@@ -138,7 +177,7 @@ const EmailClick = () => {
                 <img src={key_icon} className="service-image" />
               </div>
               <h3 className="service-title">Manutenção Corretiva</h3>
-              <button  >Entre em contato</button>
+              <button onClick={redirectToWhatsApp} >Entre em contato</button>
             </div>
           </div>
 
@@ -148,7 +187,7 @@ const EmailClick = () => {
                 <img src={book_icon} className="service-image" />
               </div>
               <h3 className="service-title">Consultoria</h3>
-              <button >Entre em contato</button>
+              <button onClick={redirectToWhatsApp}>Entre em contato</button>
             </div>
           </div>
         </div>
@@ -156,11 +195,11 @@ const EmailClick = () => {
 
       {/* SOBRE */}
       <section className='about'>
-        <h1>Sobre nós</h1>
+        <h1 id='about'>Sobre nós</h1>
         <div className='about-container'>
           <div className='about-text'>
             <p>
-            t is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using Content here, content here, making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text,
+              {adminData.sobre}
             </p>
           </div>
             <img src= {logo_placeholder} alt="Logo" className="logo" />
@@ -195,7 +234,7 @@ const EmailClick = () => {
 {/* CONTATO */}
 <section className='contact'>
 
-<h1>Contato</h1>
+<h1 id='contact'>Contato</h1>
 
 <div className='contact-container'>
 
@@ -203,7 +242,7 @@ const EmailClick = () => {
   <h2>Fale com nosso time via E-mail</h2>
   <img src={mail} />
   <div className='button-email'>
-  <button onClick={EmailClick}>yuri.alberto@corinthians.com.br</button>
+  <button onClick={redirectToEmail}>{adminData.email}</button>
   </div></div>
 
 <div className='contact-container'>
@@ -212,7 +251,7 @@ const EmailClick = () => {
   <img src={wpp} />
   
   <div className='button-wpp'>
-  <button >Clique Aqui</button>
+  <button onClick={redirectToWhatsApp}>Clique Aqui</button>
   </div>
 </div>
 </div>
@@ -224,14 +263,14 @@ const EmailClick = () => {
     <div className='footer-left'>
    <p> 
   Contatos <br/>
-  cel. 55 11 994407006<br/>
+  cel. {adminData.telefone}<br/>
 
 Email <br/>
-yuri.alberto@corinthians.com
+{adminData.email}
 </p>
     </div>
     <div className='footer-middle'>
-        <img src={logo_placeholder}></img>
+        <img src={logo_placeholder} onClick={handleImageClick}></img>
         <h4>© 2024. Site desenvolvido por Gabriel Barbosa Da Silva</h4>
         </div>
     <div className='footer-right'>

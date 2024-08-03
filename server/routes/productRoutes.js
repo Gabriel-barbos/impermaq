@@ -1,11 +1,28 @@
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 const Product = require('../models/Product'); // Certifique-se de que o caminho está correto
 
+// Configuração do multer para armazenamento de arquivos
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Defina o diretório de armazenamento de imagens
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname); // Defina o nome do arquivo
+    }
+});
+
+const upload = multer({ storage: storage });
+
 // CREATE - Criar um novo produto
-router.post('/products', async (req, res) => {
+router.post('/products', upload.single('image'), async (req, res) => {
     try {
-        const product = new Product(req.body);
+        const productData = req.body;
+        if (req.file) {
+            productData.image_main = req.file.path; // Salve o caminho da imagem principal
+        }
+        const product = new Product(productData);
         await product.save();
         res.status(201).send(product);
     } catch (error) {
@@ -37,27 +54,19 @@ router.get('/products/:id', async (req, res) => {
 });
 
 // UPDATE - Atualizar um produto pelo ID
-router.patch('/products/:id', async (req, res) => {
-    const updates = Object.keys(req.body);
-    const allowedUpdates = ['name', 'images', 'description', 'specifications', 'accessories'];
-    const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
-
-    if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates!' });
-    }
-
+router.put('/products/:id', upload.single('image'), async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id);
-
-        if (!product) {
-            return res.status(404).send();
+        const productData = req.body;
+        if (req.file) {
+            productData.image_main = req.file.path; // Atualize o caminho da imagem principal
         }
-
-        updates.forEach((update) => product[update] = req.body[update]);
-        await product.save();
-        res.status(200).send(product);
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, productData, { new: true });
+        if (!updatedProduct) {
+            return res.status(404).send({ message: 'Product not found' });
+        }
+        res.status(200).send(updatedProduct);
     } catch (error) {
-        res.status(400).send(error);
+        res.status(500).send({ message: 'Failed to update product', error });
     }
 });
 
