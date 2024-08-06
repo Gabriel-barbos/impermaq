@@ -17,13 +17,11 @@ const ProductAdmin = ({ product, onDelete, onEdit }) => {
     setOpen(false);
   };
 
-  
   const handleEditSuccess = () => {
     setOpen(false);
     onEdit(); 
     // Atualiza a lista de produtos após a edição
   };
-
 
   // Função para deletar o produto
   const handleDelete = async () => {
@@ -43,6 +41,11 @@ const ProductAdmin = ({ product, onDelete, onEdit }) => {
     }
   };
 
+  // Verifica se existe uma imagem no array, caso contrário usa o placeholder
+  const productImage = product.images && product.images.length > 0 
+    ? `http://localhost:3000/${product.images[0]}` 
+    : placeholder;
+
   return (
     <>
       <Card
@@ -52,7 +55,7 @@ const ProductAdmin = ({ product, onDelete, onEdit }) => {
         }}
       >
         <div className="Aproduct-container">
-          <img src={placeholder} alt="Product" />
+          <img src={productImage} alt="Product" />
           <p className="name">{product.name}</p>
 
           <button className="edit-btn" onClick={showModal}>

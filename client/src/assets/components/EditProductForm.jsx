@@ -1,4 +1,4 @@
-import  { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Form, Input, Radio, Upload, Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -32,21 +32,24 @@ const EditProductForm = ({ product, onSuccess }) => {
 
   const handleSubmit = async (values) => {
     try {
-      const images = values.imagens.map((file) => file.url || URL.createObjectURL(file.originFileObj));
+      const formData = new FormData();
+      formData.append('name', values.nome);
+      formData.append('description', values.descricao);
+      formData.append('specifications', values.detalhes);
+      formData.append('accessories', values.acessorios);
+      formData.append('condition', values.condicao);
+
+      if (values.imagens) {
+        values.imagens.forEach((file) => {
+          if (file.originFileObj) {
+            formData.append('images', file.originFileObj);
+          }
+        });
+      }
 
       const response = await fetch(`http://localhost:3000/api/products/${product.name}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: values.nome,
-          images: images,
-          description: values.descricao,
-          specifications: values.detalhes,
-          accessories: values.acessorios,
-          condition: values.condicao
-        })
+        body: formData
       });
 
       if (!response.ok) {
@@ -85,7 +88,11 @@ const EditProductForm = ({ product, onSuccess }) => {
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
-        <Upload listType="picture-card" beforeUpload={() => false}>
+        <Upload
+          listType="picture-card"
+          beforeUpload={() => false}
+          maxCount={5}
+        >
           <button
             style={{
               border: 0,

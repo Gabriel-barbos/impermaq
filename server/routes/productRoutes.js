@@ -1,32 +1,43 @@
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
-const Product = require('../models/Product'); // Certifique-se de que o caminho está correto
+const Product = require('../models/Product');
+const path = require('path');
+const fs = require('fs');
+
+// Caminho para o diretório de uploads
+const uploadDir = path.join(__dirname, '../uploads');
+
+// Garantir que o diretório de uploads existe
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // Configuração do multer para armazenamento de arquivos
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // Defina o diretório de armazenamento de imagens
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname); // Defina o nome do arquivo
+        cb(null, Date.now() + '-' + file.originalname);
     }
 });
 
 const upload = multer({ storage: storage });
 
 // CREATE - Criar um novo produto
-router.post('/products', upload.single('image'), async (req, res) => {
+router.post('/products', upload.array('images', 5), async (req, res) => {
     try {
         const productData = req.body;
-        if (req.file) {
-            productData.image_main = req.file.path; // Salve o caminho da imagem principal
+        if (req.files) {
+            productData.images = req.files.map(file => `/uploads/${file.filename}`); // Salvar caminhos das imagens
         }
         const product = new Product(productData);
         await product.save();
         res.status(201).send(product);
     } catch (error) {
-        res.status(400).send(error);
+        console.error(error); // Log de erro para debug
+        res.status(500).send({ error: 'Failed to create product', details: error.message });
     }
 });
 
@@ -54,11 +65,11 @@ router.get('/products/:id', async (req, res) => {
 });
 
 // UPDATE - Atualizar um produto pelo ID
-router.put('/products/:id', upload.single('image'), async (req, res) => {
+router.put('/products/:id', upload.array('images', 5), async (req, res) => {
     try {
         const productData = req.body;
-        if (req.file) {
-            productData.image_main = req.file.path; // Atualize o caminho da imagem principal
+        if (req.files) {
+            productData.images = req.files.map(file => `/uploads/${file.filename}`); // Atualize os caminhos das imagens
         }
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, productData, { new: true });
         if (!updatedProduct) {

@@ -1,8 +1,8 @@
-// Instanciando dependências
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 const productRoutes = require('./routes/productRoutes'); 
 const adminRoutes = require('./routes/AdminRoutes');
 
@@ -14,8 +14,9 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-// Servir arquivos estáticos (imagens)
-app.use('/uploads', express.static('uploads'));
+// Servir arquivos estáticos da pasta uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+console.log('Static files directory:', path.join(__dirname, './uploads'));
 
 // Usar as rotas
 app.use('/api', productRoutes);
@@ -31,7 +32,7 @@ mongoose.connect('mongodb://localhost:27017/impermaq', {
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
-    console.log('Connected to MongoDB');
+    console.log('Connected to MongoDB'); 
 });
 
 // Inicializar servidor

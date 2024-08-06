@@ -15,25 +15,27 @@ const CreateProductForm = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const images = values.imagens.map((file) => file.url || URL.createObjectURL(file.originFileObj));
+      const formData = new FormData();
+      formData.append('name', values.nome);
+      formData.append('description', values.descricao);
+      formData.append('specifications', values.detalhes);
+      formData.append('accessories', values.acessorios);
+      formData.append('condition', values.condicao);
+
+      if (values.imagens) {
+        values.imagens.forEach((file) => {
+          formData.append('images', file.originFileObj);
+        });
+      }
 
       const response = await fetch('http://localhost:3000/api/products', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: values.nome,
-          images: images,
-          description: values.descricao,
-          specifications: values.detalhes,
-          accessories: values.acessorios,
-          condition: values.condicao
-        })
+        body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create product');
+        const errorData = await response.json();
+        throw new Error(errorData.details || 'Failed to create product');
       }
 
       message.success('Produto criado com sucesso!');
@@ -67,7 +69,7 @@ const CreateProductForm = () => {
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
-        <Upload listType="picture-card" beforeUpload={() => false}>
+        <Upload listType="picture-card" beforeUpload={() => false} multiple>
           <button
             style={{
               border: 0,
@@ -116,3 +118,4 @@ const CreateProductForm = () => {
 };
 
 export default CreateProductForm;
+
