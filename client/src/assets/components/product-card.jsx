@@ -7,8 +7,11 @@ function ProductCard({ product }) {
   const navigate = useNavigate();
 
   const handleViewMore = () => {
-    navigate(`/product/${product.name}`); // Redirecionar pelo nome do produto
+    navigate(`/product/${product._id}`); // Redirecionar pelo nome do produto
   };
+
+  // Acessa o primeiro item do array de imagens
+  const productImage = product.images && product.images.length > 0 ? product.images[0] : null;
 
   return (
     <>
@@ -19,7 +22,8 @@ function ProductCard({ product }) {
         }}
       >
         <div className="product-container">
-          <img src={placeholder} alt={product.name} />
+          {/* Verifica se a primeira imagem existe, se não, usa a placeholder */}
+          <img src={productImage ? `http://localhost:3000${productImage}` : placeholder} alt={product.name} />
           <p className="name">{product.name}</p>
           <button onClick={handleViewMore}>VER MAIS</button>
         </div>

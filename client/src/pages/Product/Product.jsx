@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import BackButton from "../../assets/components/Backbutton";
 import './product.css';
@@ -6,39 +6,43 @@ import placeholder from '../../assets/img/placeholder.png';
 import logo_placeholder from '../../assets/img/logo_placeholder.jpeg';
 
 function ProductPage() {
-  const { name } = useParams(); // Obtém o nome do produto dos parâmetros da URL
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        console.log(`Buscando produto com nome: ${name}`); // Log para verificar o nome
-        const response = await fetch(`/api/products/name/${name}`);
+        const response = await fetch(`http://localhost:3000/api/products/${id}`);
         if (!response.ok) {
           throw new Error('Produto não encontrado');
         }
         const data = await response.json();
-        console.log('Produto encontrado:', data); // Log do produto encontrado
         setProduct(data);
       } catch (error) {
-        console.error('Erro ao buscar produto:', error);
-        setProduct(null); // Garantir que o estado do produto seja null em caso de erro
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProduct();
-  }, [name]);
+  }, [id]);
 
   if (loading) {
     return <div>Carregando...</div>;
   }
 
-  if (!product) {
-    return <div>Produto não encontrado</div>;
+  if (error) {
+    return <div>Erro: {error}</div>;
   }
+
+  const handleImageError = (e) => {
+    e.target.src = product.images.length > 0 ? `http://localhost:3000${product.images[0]}` : placeholder;
+  };
+
+  const productImage = product.images && product.images.length > 0 ? product.images[0] : null;
 
   return (
     <>
@@ -46,11 +50,21 @@ function ProductPage() {
       <div className="product-page">
         <div className="product-top">
           <div className="img-container">
-            <img src={product.images && product.images.length > 0 ? `/${product.images[0]}` : placeholder} className="main-img-p" alt="Produto" />
+            <img
+              src={productImage ? `http://localhost:3000${productImage}` : placeholder}
+              className="main-img-p"
+              alt="Produto"
+              onError={handleImageError}
+            />
             <div className="mini-img-container">
               {product.images && product.images.length > 1 ? (
                 product.images.slice(1).map((image, index) => (
-                  <img key={index} src={`/${image}`} alt="Produto" />
+                  <img
+                    key={index}
+                    src={`http://localhost:3000${image}`}
+                    alt={`Produto ${index + 1}`}
+                    onError={handleImageError}
+                  />
                 ))
               ) : (
                 <>

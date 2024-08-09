@@ -14,9 +14,8 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-// Servir arquivos estáticos da pasta uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-console.log('Static files directory:', path.join(__dirname, './uploads'));
+
 
 // Usar as rotas
 app.use('/api', productRoutes);

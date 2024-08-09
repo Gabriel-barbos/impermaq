@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import placeholder from '../img/placeholder.png';
 import '../styles/productAdmin.css';
 import { Modal, Card, message } from 'antd';
@@ -6,6 +6,14 @@ import EditProductForm from './EditProductForm';
 
 const ProductAdmin = ({ product, onDelete, onEdit }) => {
   const [open, setOpen] = useState(false);
+
+  // Acessa o primeiro item do array de imagens, agora usando 'images'
+  const productImage = product.images && product.images.length > 0 ? product.images[0] : null;
+
+  // Log para verificar o caminho da imagem
+  useEffect(() => {
+    console.log('Product Image:', productImage);
+  }, [productImage]);
 
   // Função para mostrar o modal de edição
   const showModal = () => {
@@ -23,7 +31,6 @@ const ProductAdmin = ({ product, onDelete, onEdit }) => {
     // Atualiza a lista de produtos após a edição
   };
 
-  // Função para deletar o produto
   const handleDelete = async () => {
     try {
       const response = await fetch(`http://localhost:3000/api/products/${product._id}`, {
@@ -41,11 +48,6 @@ const ProductAdmin = ({ product, onDelete, onEdit }) => {
     }
   };
 
-  // Verifica se existe uma imagem no array, caso contrário usa o placeholder
-  const productImage = product.images && product.images.length > 0 
-    ? `http://localhost:3000/${product.images[0]}` 
-    : placeholder;
-
   return (
     <>
       <Card
@@ -55,7 +57,8 @@ const ProductAdmin = ({ product, onDelete, onEdit }) => {
         }}
       >
         <div className="Aproduct-container">
-          <img src={productImage} alt="Product" />
+          {/* Verifica se a primeira imagem existe, se não, usa a placeholder */}
+          <img src={productImage ? `http://localhost:3000${productImage}` : placeholder} alt="Product" />
           <p className="name">{product.name}</p>
 
           <button className="edit-btn" onClick={showModal}>
