@@ -4,36 +4,43 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-   
+   align-items: center;
 }
 
 .product-top{
     display: flex;
-    flex-direction: row;
-    justify-content: space-between; /* Adiciona espaço entre as divs */
-    max-width: 1600px;
-    margin: 0 auto; /* Centraliza o container na tela */
-    gap: 12rem;
-    
-}
-.img-container{
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    flex: 1;
+    justify-content: space-between; /* Espaço entre as divs */
+    max-width: 1800px;
+    gap: 50px; /* Espaço entre as divs */
+    flex-wrap: wrap; /* Permite que as divs quebrem linha se necessário */
+margin-left: 20px;
 }
 
+
+.img-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 45%; /* Garante que a div não fique muito pequena */
+}
+
+.product-info{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 45%; /* Garante que a div não fique muito pequena */
+}
+
+
 .main-img-p{
- max-width: 600px;
- max-height: 500px;
- width: auto;
- height: auto;
- border: 2px solid #cecece;
-border-radius: 10px;
-    margin-right: 100px;
-    min-width: 430px;
-    min-height: 300px;
-    object-fit: cover;
+    
+         width: 600px;
+        border: 2px solid #cecece;
+        border-radius: 10px;
+        margin-right: 100px; /* Ajuste conforme necessário */
+        object-fit: cover; /* Garante que a imagem se ajuste ao contêiner mantendo as proporções */
+    
+    
 }
 
 .mini-img-container{
@@ -44,21 +51,16 @@ border-radius: 10px;
 }
 
 .mini-img-container img{
-    max-width: 100px;
-    max-height: 100px;
-    display: flex;
-    width: auto;
+    width: 140px;
     height: auto;
-}
-
-
-
-.product-info{
-    width: 50%;
     display: flex;
-    flex-direction: column;
-    
+
+    margin-top: 10px;
 }
+
+
+
+
 
 .product-info h1{
     font-family: "Lato", sans-serif;
@@ -91,6 +93,25 @@ border-radius: 10px;
     margin-bottom: 15px;
     font-size: 22px;
 }
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    width: 50px;
+  }
+  
+  .badge-novo {
+    background-color: rgb(51, 51, 202);
+    color: white;
+  }
+  
+  .badge-usado {
+    background-color: rgb(213, 216, 24);
+    color: black;
+  }
+
 
 .buttons-container{
     display: flex;
@@ -196,6 +217,14 @@ margin-top: -80px;
 
 }
 
+.main-img-p{
+    width: 400px;
+}
+
+.mini-img-container img{
+    width: 100px;
+}
+
 .product-info {
     width: 100%;
 }
@@ -221,6 +250,7 @@ align-items: center;
     font-size: 35px;
 }
 
+
   }
 
   @media (max-width: 600px) {
@@ -232,19 +262,39 @@ align-items: center;
 
     .mini-img-container img{
     
-        max-width: 80px;
+        max-width: 150px;
     }
+  
+    
   }
 
   @media (max-width: 500px) {
     
     .mini-img-container{
         display: flex;
-        max-width: 100px;
+        max-width: 300px;
     }
+
+    .main-img-p{
+        width: 350px;
+    }
+    
+    .product-info h1{
+    font-size: 35px;
+    }
+
+    .buy-now{
+    margin-left: 25px;
+}
+    
 
     .mini-img-container img{
     
-        max-width: 80px;
+        max-width:90px;
+    }
+
+    .product-info p, h3{
+        margin-left: 15px;
+        max-width: 380px;
     }
   }

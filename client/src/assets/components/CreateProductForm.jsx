@@ -16,14 +16,14 @@ const CreateProductForm = () => {
   const handleSubmit = async (values) => {
     try {
       const formData = new FormData();
-      formData.append('name', values.nome);
-      formData.append('description', values.descricao);
-      formData.append('specifications', values.detalhes);
-      formData.append('accessories', values.acessorios);
-      formData.append('condition', values.condicao);
+      formData.append('name', values.name);  // Ajustado para 'name'
+      formData.append('description', values.description);  // Ajustado para 'description'
+      formData.append('specifications', values.specifications);  // Ajustado para 'specifications'
+      formData.append('accessories', values.accessories);  // Ajustado para 'accessories'
+      formData.append('condition', values.condition);  // Ajustado para 'condition'
 
-      if (values.imagens) {
-        values.imagens.forEach((file) => {
+      if (values.images) {
+        values.images.forEach((file) => {
           formData.append('images', file.originFileObj);
         });
       }
@@ -40,6 +40,8 @@ const CreateProductForm = () => {
 
       message.success('Produto criado com sucesso!');
       form.resetFields();
+      window.location.reload();
+      
     } catch (error) {
       message.error(error.message);
     }
@@ -51,13 +53,13 @@ const CreateProductForm = () => {
       layout="horizontal"
       style={{ maxWidth: 600 }}
       initialValues={{
-        condicao: 'Novo',
+        condition: 'Novo',  // Ajustado para 'condition'
       }}
       onFinish={handleSubmit}
     >
       <Form.Item
         label="Nome"
-        name="nome"
+        name="name"  // Ajustado para 'name'
         rules={[{ required: true, message: 'Por favor, insira o nome do produto!' }]}
       >
         <Input />
@@ -65,7 +67,7 @@ const CreateProductForm = () => {
 
       <Form.Item
         label="Imagens"
-        name="imagens"
+        name="images"  // Ajustado para 'images'
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
@@ -89,19 +91,19 @@ const CreateProductForm = () => {
         </Upload>
       </Form.Item>
 
-      <Form.Item label="Descrição" name="descricao">
+      <Form.Item label="Descrição" name="description">  
         <TextArea rows={4} />
       </Form.Item>
 
-      <Form.Item label="Detalhes" name="detalhes">
+      <Form.Item label="Detalhes" name="specifications">  
         <TextArea rows={4} />
       </Form.Item>
 
-      <Form.Item label="Acessórios" name="acessorios">
+      <Form.Item label="Acessórios" name="accessories">  
         <TextArea rows={4} />
       </Form.Item>
 
-      <Form.Item label="Condição" name="condicao">
+      <Form.Item label="Condição" name="condition">  
         <Radio.Group>
           <Radio value="Novo">Novo</Radio>
           <Radio value="Usado">Usado</Radio>
@@ -118,4 +120,3 @@ const CreateProductForm = () => {
 };
 
 export default CreateProductForm;
-

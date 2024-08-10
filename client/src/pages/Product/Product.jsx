@@ -4,39 +4,60 @@ import BackButton from "../../assets/components/Backbutton";
 import './product.css';
 import placeholder from '../../assets/img/placeholder.png';
 import logo_placeholder from '../../assets/img/logo_placeholder.jpeg';
+import { fetchAdminData } from '../../api';
 
 function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [adminData, setAdminData] = useState({}); //buscar dados do admin
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/products/${id}`);
-        if (!response.ok) {
+        const [productResponse, adminData] = await Promise.all([
+          fetch(`http://localhost:3000/api/products/${id}`),
+          fetchAdminData()
+        ]);
+  
+        if (!productResponse.ok) {
           throw new Error('Produto não encontrado');
         }
-        const data = await response.json();
-        setProduct(data);
+  
+        const productData = await productResponse.json();
+  
+        setProduct(productData);
+        setAdminData(adminData);
       } catch (error) {
         setError(error.message);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchProduct();
+  
+    fetchData();
   }, [id]);
-
+  
   if (loading) {
     return <div>Carregando...</div>;
   }
-
+  
   if (error) {
     return <div>Erro: {error}</div>;
   }
+
+  const redirectToWhatsApp = () => {
+    if (adminData.telefone) {
+      const formattedPhone = adminData.telefone.replace(/\D/g, ''); // Remove caracteres não numéricos
+      const message = `Olá, gostaria de obter o orçamento do ${encodeURIComponent(product.name)}.`; // Mensagem pré-pronta
+      const url = `https://wa.me/${formattedPhone}?text=${message}`;
+      window.open(url, '_blank');
+    } else {
+      alert('Número de telefone do administrador não disponível.');
+    }
+  };
+  
 
   const handleImageError = (e) => {
     e.target.src = product.images.length > 0 ? `http://localhost:3000${product.images[0]}` : placeholder;
@@ -47,7 +68,7 @@ function ProductPage() {
   return (
     <>
       <BackButton />
-      <div className="product-page">
+      
         <div className="product-top">
           <div className="img-container">
             <img
@@ -79,13 +100,15 @@ function ProductPage() {
 
           <div className="product-info">
             <h1>{product.name}</h1>
-            <span>{product.condition}</span> {/* Substitua por lógica de badge */}
-            <button className="buy-now">Solicitar Orçamento</button>
+            <span className={`badge ${product.condition === 'Novo' ? 'badge-novo' : 'badge-usado'}`}>
+              {product.condition === 'Novo' ? 'NOVO' : 'USADO'}
+           </span>
+            <button className="buy-now" onClick={redirectToWhatsApp}>Solicitar Orçamento</button>
             <h3>Descrição</h3>
             <p>{product.description}</p>
           </div>
         </div>
-
+        <div className="product-page">
         <div className="product-bottom">
           <div className="product-bottom-left">
             <h3>Especificações</h3>

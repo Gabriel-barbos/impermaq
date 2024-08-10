@@ -4,7 +4,7 @@ import '../styles/productAdmin.css';
 import { Modal, Card, message } from 'antd';
 import EditProductForm from './EditProductForm';
 
-const ProductAdmin = ({ product, onDelete, onEdit }) => {
+const ProductAdmin = ({ product, onDelete  }) => {
   const [open, setOpen] = useState(false);
 
   // Acessa o primeiro item do array de imagens, agora usando 'images'
@@ -27,7 +27,7 @@ const ProductAdmin = ({ product, onDelete, onEdit }) => {
 
   const handleEditSuccess = () => {
     setOpen(false);
-    onEdit(); 
+     
     // Atualiza a lista de produtos após a edição
   };
 

@@ -47,7 +47,7 @@ const EditProductForm = ({ product, onSuccess }) => {
         });
       }
 
-      const response = await fetch(`http://localhost:3000/api/products/${product.name}`, {
+      const response = await fetch(`http://localhost:3000/api/products/${product._id}`, {
         method: 'PUT',
         body: formData
       });
@@ -57,7 +57,6 @@ const EditProductForm = ({ product, onSuccess }) => {
       }
 
       message.success('Produto atualizado com sucesso!');
-      window.location.reload();
       onSuccess();
     } catch (error) {
       message.error(error.message);

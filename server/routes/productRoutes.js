@@ -28,6 +28,7 @@ const upload = multer({ storage: storage });
 // CREATE - Criar um novo produto
 router.post('/products', upload.array('images', 5), async (req, res) => {
     try {
+        console.log(req.body); // Verifique se condition está presente
         const productData = req.body;
         if (req.files) {
             productData.images = req.files.map(file => `/uploads/${file.filename}`); // Salvar caminhos das imagens
@@ -71,18 +72,34 @@ router.get('/products/:id', async (req, res) => {
 router.put('/products/:id', upload.array('images', 5), async (req, res) => {
     try {
         const productData = req.body;
+
+        // Obter o produto existente
+        const existingProduct = await Product.findById(req.params.id);
+
+        if (!existingProduct) {
+            return res.status(404).send({ error: 'Product not found' });
+        }
+
+        // Atualizar imagens
         if (req.files) {
-            productData.images = req.files.map(file => `/uploads/${file.filename}`); // Atualize os caminhos das imagens
+            // Manter imagens antigas que não estão sendo substituídas
+            const newImagePaths = req.files.map(file => `/uploads/${file.filename}`);
+            productData.images = [...existingProduct.images, ...newImagePaths];
+        } else {
+            // Manter imagens antigas se nenhuma nova imagem foi enviada
+            productData.images = existingProduct.images;
         }
+
+        // Atualizar o produto no banco de dados
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, productData, { new: true });
-        if (!updatedProduct) {
-            return res.status(404).send({ message: 'Product not found' });
-        }
+
         res.status(200).send(updatedProduct);
     } catch (error) {
-        res.status(500).send({ message: 'Failed to update product', error });
+        console.error(error); // Log de erro para debug
+        res.status(500).send({ error: 'Failed to update product', details: error.message });
     }
 });
+
 
 // DELETE - Deletar um produto pelo ID
 router.delete('/products/:id', async (req, res) => {
@@ -91,6 +108,18 @@ router.delete('/products/:id', async (req, res) => {
 
         if (!product) {
             return res.status(404).send();
+        }
+
+        // Excluir as imagens do produto
+        if (product.image && product.image.length > 0) {
+            product.image.forEach(imagePath => {
+                const fullImagePath = path.join(__dirname, '../uploads', imagePath);
+                fs.unlink(fullImagePath, (err) => {
+                    if (err) {
+                        console.error(`Erro ao deletar a imagem: ${fullImagePath}`, err);
+                    }
+                });
+            });
         }
 
         res.status(200).send(product);
