@@ -31,35 +31,40 @@ const EditProductForm = ({ product, onSuccess }) => {
   };
 
   const handleSubmit = async (values) => {
-    try {
-      const formData = new FormData();
-      formData.append('name', values.nome);
-      formData.append('description', values.descricao);
-      formData.append('specifications', values.detalhes);
-      formData.append('accessories', values.acessorios);
-      formData.append('condition', values.condicao);
+    
+      try {
+        const formData = new FormData();
+        formData.append('name', values.nome);
+        formData.append('description', values.descricao);
+        formData.append('specifications', values.detalhes);
+        formData.append('accessories', values.acessorios);
+        formData.append('condition', values.condicao);
 
-      if (values.imagens) {
-        values.imagens.forEach((file) => {
-          if (file.originFileObj) {
-            formData.append('images', file.originFileObj);
-          }
+        if (values.imagens) {
+            values.imagens.forEach((file) => {
+                // Adicionar novas imagens ao FormData
+                if (file.originFileObj) {
+                    formData.append('images', file.originFileObj);
+                } else {
+                    // Manter imagens existentes
+                    formData.append('existingImages', file.url); 
+                }
+            });
+        }
+
+        const response = await fetch(`http://localhost:3000/api/products/${product._id}`, {
+            method: 'PUT',
+            body: formData
         });
-      }
 
-      const response = await fetch(`http://localhost:3000/api/products/${product._id}`, {
-        method: 'PUT',
-        body: formData
-      });
+        if (!response.ok) {
+            throw new Error('Failed to update product');
+        }
 
-      if (!response.ok) {
-        throw new Error('Failed to update product');
-      }
-
-      message.success('Produto atualizado com sucesso!');
-      onSuccess();
+        message.success('Produto atualizado com sucesso!');
+        onSuccess();
     } catch (error) {
-      message.error(error.message);
+        message.error(error.message);
     }
   };
 

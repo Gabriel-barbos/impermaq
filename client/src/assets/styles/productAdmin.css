@@ -7,11 +7,11 @@
 }
 
 .Aproduct-container img{
-  width: 200px;  
-  height: 200px; 
-  
-object-fit: cover;
-
+  width: 100%;          /* Ajusta a largura da imagem para o tamanho do contêiner */
+    height: 200px;        /* Define uma altura fixa para todas as imagens */
+    object-fit: contain;    /* Garante que a imagem preencha o contêiner sem distorcer */
+    object-position: center; /* Centraliza a imagem dentro do contêiner */
+    border-radius: 10px; /* Arredonda as bordas da imagem */
 }
 
 .name{
@@ -22,9 +22,7 @@ object-fit: cover;
     margin: 0;
 }
 
-.price{
-    font-size: 20px;
-}
+
 
 .see_more_container{
 display: flex;

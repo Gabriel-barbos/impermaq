@@ -26,6 +26,7 @@ import { fetchProducts } from '../../api';
 import  { useEffect, useState } from 'react';
 import ProductCard from '../../assets/components/product-card';
 import { useNavigate } from 'react-router-dom'; 
+import {  Modal,Button, Result} from 'antd';
 
 
 function Home(){
@@ -36,6 +37,25 @@ function Home(){
   const [adminData, setAdminData] = useState({}); //buscar dados do admin
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [clickCount, setClickCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+//modal config
+
+const showModal = () => {
+  setIsModalOpen(true);
+};
+
+const handleOk = () => {
+  setIsModalOpen(false);
+};
+
+const handleCancel = () => {
+  setIsModalOpen(false);
+};
+
+
+
+
   const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -158,6 +178,7 @@ function Home(){
         </button>
       </section>
 
+
       <section className="services">
         <h1 id='services'>Serviços</h1>
         <div className="services-list">
@@ -167,7 +188,21 @@ function Home(){
                 <img src={check_icon} className="service-image" />
               </div>
               <h3 className="service-title">Manutenção Preventiva</h3>
-              <button onClick={redirectToWhatsApp}>Entre em contato</button>
+              <button onClick={showModal}>Entre em contato</button>
+              <Modal title="Serviço  indisponivel" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                
+              <Result
+                 status="warning"
+                   title="Esse serviço esta temporariamente indisponivel"
+                    xtra={
+                     <Button type="primary" key="console">
+                    Fechar
+            </Button>
+ }
+ />
+
+
+            </Modal>
             </div>
           </div>
 
@@ -177,7 +212,7 @@ function Home(){
                 <img src={key_icon} className="service-image" />
               </div>
               <h3 className="service-title">Manutenção Corretiva</h3>
-              <button onClick={redirectToWhatsApp} >Entre em contato</button>
+              <button onClick={showModal} >Entre em contato</button>
             </div>
           </div>
 
@@ -187,7 +222,7 @@ function Home(){
                 <img src={book_icon} className="service-image" />
               </div>
               <h3 className="service-title">Consultoria</h3>
-              <button onClick={redirectToWhatsApp}>Entre em contato</button>
+              <button onClick={showModal}>Entre em contato</button>
             </div>
           </div>
         </div>

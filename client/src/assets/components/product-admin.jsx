@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import placeholder from '../img/placeholder.png';
+import placeholder from '../../assets/img/placeholder1.png';
 import '../styles/productAdmin.css';
 import { Modal, Card, message } from 'antd';
 import EditProductForm from './EditProductForm';

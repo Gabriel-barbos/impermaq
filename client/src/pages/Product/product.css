@@ -67,6 +67,7 @@ margin-left: 20px;
     font-weight: 350;
     font-size: 50px;
     font-style: light;
+    margin-bottom: 15px;
 }
 
 .product-info h2{
@@ -84,6 +85,7 @@ margin-left: 20px;
     font-style: normal;
     margin-bottom: 0px;
     font-size: 22px;
+    margin-left: -35px;
 }
 
 .product-info p{
@@ -92,6 +94,7 @@ margin-left: 20px;
     font-style: normal;
     margin-bottom: 15px;
     font-size: 22px;
+    margin-left: -35px;
 }
 
 .badge {
@@ -176,7 +179,8 @@ margin-left: 20px;
 
 .product-bottom-right{
     width: 50%;
-margin-top: -80px;
+margin-top: -70px;
+margin-left: 5px;
 }
 
 .product-bottom p{
@@ -276,25 +280,32 @@ align-items: center;
     }
 
     .main-img-p{
-        width: 350px;
+        width: 390px;
     }
     
     .product-info h1{
     font-size: 35px;
     }
 
-    .buy-now{
-    margin-left: 25px;
-}
-    
+    .product-info{
+        margin-top: -20px;
+    }
 
+    
+.product-info h3{
+    margin-left: 10px;
+}
+
+.main-img-p, .img-container{
+    margin-right: 0px;
+}
     .mini-img-container img{
     
         max-width:90px;
     }
 
     .product-info p, h3{
-        margin-left: 15px;
+        margin-left: 10px;
         max-width: 380px;
     }
   }

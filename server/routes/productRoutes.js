@@ -81,12 +81,18 @@ router.put('/products/:id', upload.array('images', 5), async (req, res) => {
         }
 
         // Atualizar imagens
-        if (req.files) {
-            // Manter imagens antigas que não estão sendo substituídas
+        if (req.files && req.files.length > 0) {
             const newImagePaths = req.files.map(file => `/uploads/${file.filename}`);
+
+            // Combinar as novas imagens com as existentes
             productData.images = [...existingProduct.images, ...newImagePaths];
+
+            // Garantir que a primeira imagem continue sendo a principal
+            if (req.body.keepExistingMainImage === 'false') {
+                productData.images = [...newImagePaths, ...existingProduct.images];
+            }
         } else {
-            // Manter imagens antigas se nenhuma nova imagem foi enviada
+            // Manter as imagens antigas se nenhuma nova imagem foi enviada
             productData.images = existingProduct.images;
         }
 
@@ -107,24 +113,26 @@ router.delete('/products/:id', async (req, res) => {
         const product = await Product.findByIdAndDelete(req.params.id);
 
         if (!product) {
-            return res.status(404).send();
+            return res.status(404).send({ message: 'Produto não encontrado' });
         }
 
         // Excluir as imagens do produto
         if (product.image && product.image.length > 0) {
-            product.image.forEach(imagePath => {
+            const deletePromises = product.image.map(async (imagePath) => {
                 const fullImagePath = path.join(__dirname, '../uploads', imagePath);
-                fs.unlink(fullImagePath, (err) => {
-                    if (err) {
-                        console.error(`Erro ao deletar a imagem: ${fullImagePath}`, err);
-                    }
-                });
+                try {
+                    await fs.promises.unlink(fullImagePath);
+                } catch (err) {
+                    console.error(`Erro ao deletar a imagem: ${fullImagePath}`, err);
+                }
             });
+            await Promise.all(deletePromises);
         }
 
-        res.status(200).send(product);
+        res.status(200).send({ message: 'Produto e imagens deletados com sucesso' });
     } catch (error) {
-        res.status(500).send(error);
+        console.error('Erro ao deletar o produto:', error);
+        res.status(500).send({ message: 'Erro interno no servidor' });
     }
 });
 

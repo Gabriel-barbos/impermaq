@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import BackButton from "../../assets/components/Backbutton";
 import './product.css';
-import placeholder from '../../assets/img/placeholder.png';
+import placeholder from '../../assets/img/placeholder1.png';
 import logo_placeholder from '../../assets/img/logo_placeholder.jpeg';
 import { fetchAdminData } from '../../api';
 
@@ -128,27 +128,28 @@ function ProductPage() {
       </div>
 
       <footer>
-        <div className='footer-container'>
-          <div className='footer-left'>
-            <p>
-              Contatos <br />
-              cel. 55 11 994407006<br />
-              Email <br />
-              yuri.alberto@corinthians.com
-            </p>
-          </div>
-          <div className='footer-middle'>
-            <img src={logo_placeholder} alt="Logo" />
-            <h4>© 2024. Site desenvolvido por Gabriel Barbosa Da Silva</h4>
-          </div>
-          <div className='footer-right'>
-            <p>
-              Horário de funcionamento<br />
-              Seg - Sex / 9:00 - 18:00 Hs.
-            </p>
-          </div>
+  <div className='footer-container'>
+    <div className='footer-left'>
+   <p> 
+  Contatos <br/>
+  cel. {adminData.telefone}<br/>
+
+Email <br/>
+{adminData.email}
+</p>
+    </div>
+    <div className='footer-middle'>
+        <img src={logo_placeholder}></img>
+        <h4>© 2024. Site desenvolvido por Gabriel Barbosa Da Silva</h4>
         </div>
-      </footer>
+    <div className='footer-right'>
+ <p> 
+  Hórario de funcionamento<br/>
+  Seg - Sex / 9:00 - 18:00 Hs.
+    </p>
+    </div>
+  </div>
+</footer>
     </>
   );
 }

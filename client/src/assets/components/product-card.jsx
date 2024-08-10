@@ -1,6 +1,6 @@
 import { Card } from "antd";
 import { useNavigate } from "react-router-dom";
-import placeholder from '../img/placeholder.png';
+import placeholder from '../../assets/img/placeholder1.png';
 import '../styles/product-card.css';
 
 function ProductCard({ product }) {
