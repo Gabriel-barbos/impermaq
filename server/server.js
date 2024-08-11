@@ -22,7 +22,9 @@ app.use('/api', productRoutes);
 app.use('/api', adminRoutes);
 
 // Conexão com MongoDB
-mongoose.connect('mongodb://localhost:27017/impermaq', {
+
+
+mongoose.connect('mongodb+srv://Gabriel:Gabriel1053@impermaq.ty4o9.mongodb.net/?retryWrites=true&w=majority&appName=impermaq', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
