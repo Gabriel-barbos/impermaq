@@ -2,7 +2,7 @@
 import '../styles/navbar.css'
 import  { useState } from 'react';
 import { AlignJustify } from 'lucide-react';
-import  logo_placeholder from '../img/logo_placeholder.jpeg'
+import logo from '../../assets/img/logo.jpg'
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -23,7 +23,7 @@ const Navbar = () => {
       <div className="navbar-logo">
       <AlignJustify className="menu-icon" onClick={toggleMenu}  />
 
-        <img src= {logo_placeholder} alt="Logo" className="logo" />
+        <img src= {logo} alt="Logo" className="logo" />
       </div>
     </nav>
   );

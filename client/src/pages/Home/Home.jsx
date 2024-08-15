@@ -11,13 +11,13 @@ import weg_logo from '../../assets/img/weg_logo.png'
 import book_icon from '../../assets/img/icons/book.svg'
 import check_icon from '../../assets/img/icons/checklist.svg'
 import key_icon from  '../../assets/img/icons/tool.svg'
-import logo_placeholder from '../../assets/img/logo_placeholder.jpeg'
 import money_icon from  '../../assets/img/icons/coin.svg'
 import phone_icon from '../../assets/img/icons/phone.svg'
 import card_icon from '../../assets/img/icons/card.svg'
 import checkitem_icon from '../../assets/img/icons/check.svg'
 import mail from '../../assets/img/icons/mail.svg'
 import wpp from '../../assets/img/icons/wpp.svg'
+import logo from '../../assets/img/logo.jpg'
 //components
 import { ArrowUpRight } from 'lucide-react';
 
@@ -237,7 +237,7 @@ const handleCancel = () => {
               {adminData.sobre}
             </p>
           </div>
-            <img src= {logo_placeholder} alt="Logo" className="logo" />
+            <img src= {logo} alt="Logo" className="logo" />
         </div>
         
         
@@ -305,7 +305,7 @@ Email <br/>
 </p>
     </div>
     <div className='footer-middle'>
-        <img src={logo_placeholder} onClick={handleImageClick}></img>
+        <img src={logo} onClick={handleImageClick}></img>
         <h4>© 2024. Site desenvolvido por Gabriel Barbosa Da Silva</h4>
         </div>
     <div className='footer-right'>
